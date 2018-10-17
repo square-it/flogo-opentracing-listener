@@ -1,9 +1,12 @@
 package opentracing
 
 import (
-	"github.com/TIBCOSoftware/flogo-contrib/action/flow/instance"
-	"github.com/opentracing/opentracing-go"
 	"sync"
+
+	"github.com/TIBCOSoftware/flogo-contrib/action/flow/instance"
+	"github.com/TIBCOSoftware/flogo-lib/core/events"
+	"github.com/TIBCOSoftware/flogo-lib/logger"
+	"github.com/opentracing/opentracing-go"
 )
 
 var (
@@ -11,78 +14,85 @@ var (
 	spans map[string]opentracing.Span
 )
 
+type OpenTracingListener struct {
+	name string
+	logger logger.Logger
+}
+
+func (otl *OpenTracingListener) Name() string {
+	return otl.name
+}
+
+func (otl *OpenTracingListener) EventTypes() []string {
+	return []string{instance.FLOW_EVENT_TYPE}
+}
+
+func (otl *OpenTracingListener) HandleEvent(evt *events.EventContext) error {
+	// Handle flow events and ignore remaining
+	if evt.GetType() == instance.FLOW_EVENT_TYPE {
+		switch t := evt.GetEvent().(type) {
+		case instance.FlowEvent:
+			otl.logger.Infof("Name: %s, ID: %s, Status: %s ", t.Name(), t.ID(), t.Status())
+			switch t.Status() {
+			case instance.STARTED:
+				startFlowSpan(t)
+			case instance.COMPLETED:
+				finishFlowSpan(t)
+			}
+		case instance.TaskEvent:
+			switch t.Status() {
+			case instance.STARTED:
+				startTaskSpan(t)
+			case instance.COMPLETED:
+				finishTaskSpan(t)
+			}
+			otl.logger.Infof("Name: %s, FID: %s, Status: %s ", t.Name(), t.FlowID(), t.Status())
+		}
+	}
+	return nil
+}
+
 func init() {
 	initFromEnvVars()
 
 	spans = make(map[string]opentracing.Span)
 
-	instance.RegisterFlowEventListener(opentracingFlowEventListener)
-	instance.RegisterTaskEventListener(opentracingTaskEventListener)
+	events.RegisterEventListener(&OpenTracingListener{name: "OpenTracingListener", logger: logger.GetLogger("open-tracing-listener")})
 }
 
-func startFlowSpan(flowEventContext *instance.FlowEventContext) {
-	span := opentracing.StartSpan(flowEventContext.Name())
+func startFlowSpan(flowEvent instance.FlowEvent) {
+	span := opentracing.StartSpan(flowEvent.Name(), opentracing.StartTime(flowEvent.Time()))
 	span.SetTag("type", "flogo:flow")
 
 	lock.Lock()
 	defer lock.Unlock()
-	spans[flowEventContext.ID()] = span
+	spans[flowEvent.ID()] = span
 }
 
-func finishFlowSpan(flowEventContext *instance.FlowEventContext) {
+func finishFlowSpan(flowEvent instance.FlowEvent) {
 	lock.Lock()
 	defer lock.Unlock()
-	span := spans[flowEventContext.ID()]
+	span := spans[flowEvent.ID()]
 
-	span.Finish()
+	span.FinishWithOptions(opentracing.FinishOptions{FinishTime: flowEvent.Time()})
 }
 
-func startTaskSpan(taskEventContext *instance.TaskEventContext) {
-	flowSpan := spans[taskEventContext.FlowID()]
+func startTaskSpan(taskEvent instance.TaskEvent) {
+	lock.Lock()
+	defer lock.Unlock()
+	flowSpan := spans[taskEvent.FlowID()]
 
-	span := opentracing.StartSpan(taskEventContext.Name(), opentracing.ChildOf(flowSpan.Context()))
+	span := opentracing.StartSpan(taskEvent.Name(), opentracing.ChildOf(flowSpan.Context()), opentracing.StartTime(taskEvent.Time()))
 	span.SetTag("type", "flogo:activity")
 
+	spans[taskEvent.FlowID() + taskEvent.Name()] = span
+}
+
+func finishTaskSpan(taskEvent instance.TaskEvent) {
 	lock.Lock()
 	defer lock.Unlock()
-	spans[taskEventContext.FlowID() + taskEventContext.Name()] = span
+	span := spans[taskEvent.FlowID() + taskEvent.Name()]
+
+	span.FinishWithOptions(opentracing.FinishOptions{FinishTime: taskEvent.Time()})
 }
 
-func finishTaskSpan(taskEventContext *instance.TaskEventContext) {
-	lock.Lock()
-	defer lock.Unlock()
-	span := spans[taskEventContext.FlowID() + taskEventContext.Name()]
-
-	span.Finish()
-}
-
-func opentracingFlowEventListener(flowEventContext *instance.FlowEventContext) {
-	status := flowEventContext.Status()
-
-	switch status {
-	//case instance.Created:
-	case instance.Started:
-		startFlowSpan(flowEventContext)
-	//case instance.Cancelled:
-	case instance.Completed:
-		finishFlowSpan(flowEventContext)
-	//case instance.Failed:
-	}
-
-}
-
-func opentracingTaskEventListener(taskEventContext *instance.TaskEventContext) {
-	status := taskEventContext.Status()
-
-	switch status {
-	//case instance.Created:
-	//case instance.Scheduled:
-	//case instance.Skipped:
-	case instance.Started:
-		startTaskSpan(taskEventContext)
-	//case instance.Failed:
-	case instance.Completed:
-		finishTaskSpan(taskEventContext)
-	//case instance.Waiting:
-	}
-}
