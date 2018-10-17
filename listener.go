@@ -10,12 +10,12 @@ import (
 )
 
 var (
-	lock = &sync.RWMutex{}
+	lock  = &sync.RWMutex{}
 	spans map[string]opentracing.Span
 )
 
 type OpenTracingListener struct {
-	name string
+	name   string
 	logger logger.Logger
 }
 
@@ -32,7 +32,7 @@ func (otl *OpenTracingListener) HandleEvent(evt *events.EventContext) error {
 	if evt.GetType() == instance.FLOW_EVENT_TYPE {
 		switch t := evt.GetEvent().(type) {
 		case instance.FlowEvent:
-			otl.logger.Infof("Name: %s, ID: %s, Status: %s ", t.Name(), t.ID(), t.Status())
+			otl.logger.Debugf("Name: %s, ID: %s, Status: %s ", t.Name(), t.ID(), t.Status())
 			switch t.Status() {
 			case instance.STARTED:
 				startFlowSpan(t)
@@ -40,13 +40,13 @@ func (otl *OpenTracingListener) HandleEvent(evt *events.EventContext) error {
 				finishFlowSpan(t)
 			}
 		case instance.TaskEvent:
+			otl.logger.Debugf("Name: %s, FID: %s, Status: %s ", t.Name(), t.FlowID(), t.Status())
 			switch t.Status() {
 			case instance.STARTED:
 				startTaskSpan(t)
 			case instance.COMPLETED:
 				finishTaskSpan(t)
 			}
-			otl.logger.Infof("Name: %s, FID: %s, Status: %s ", t.Name(), t.FlowID(), t.Status())
 		}
 	}
 	return nil
@@ -85,14 +85,13 @@ func startTaskSpan(taskEvent instance.TaskEvent) {
 	span := opentracing.StartSpan(taskEvent.Name(), opentracing.ChildOf(flowSpan.Context()), opentracing.StartTime(taskEvent.Time()))
 	span.SetTag("type", "flogo:activity")
 
-	spans[taskEvent.FlowID() + taskEvent.Name()] = span
+	spans[taskEvent.FlowID()+taskEvent.Name()] = span
 }
 
 func finishTaskSpan(taskEvent instance.TaskEvent) {
 	lock.Lock()
 	defer lock.Unlock()
-	span := spans[taskEvent.FlowID() + taskEvent.Name()]
+	span := spans[taskEvent.FlowID()+taskEvent.Name()]
 
 	span.FinishWithOptions(opentracing.FinishOptions{FinishTime: taskEvent.Time()})
 }
-
