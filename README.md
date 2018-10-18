@@ -56,6 +56,9 @@ The binary is ready to be run in ```./bin``` directory.
 
 ## Usage
 
+To use this listener once it is installed, **no modification of source code is required**.
+Instead, it is only required to define an [application-level configuration](#configuration) and to run a [collector](#collectors).
+
 ### Configuration
 
 Currently, all flows of an application have the same OpenTracing configuration set using environment variables.
@@ -96,21 +99,6 @@ To start a single-node instance of a Zipkin server with HTTP transport, run:
 docker run --name zipkin -d -p 9411:9411 openzipkin/zipkin
 ```
 
-Use following configuration for the model:
-```json
-          {
-            "name": "opentracing-config",
-            "type": "any",
-            "value": {
-              "implementation": "zipkin",
-              "transport": "http",
-              "endpoints": [
-                "http://127.0.0.1:9411/api/v1/spans"
-              ]
-            }
-          }
-```
-
 If using Docker Machine, replace *127.0.0.1* by the IP of the active Docker Machine (usually *192.168.99.100*,
 ```echo $(docker-machine ip $(docker-machine active))``` to display the IP).
 
@@ -138,21 +126,6 @@ If using Docker Machine, run instead:
 docker run --name zipkin -d -p 9411:9411 -e KAFKA_BOOTSTRAP_SERVERS=$(docker-machine ip $(docker-machine active)):29092 openzipkin/zipkin
 ```
 
-Use following configuration for the model:
-```json
-          {
-            "name": "opentracing-config",
-            "type": "any",
-            "value": {
-              "implementation": "zipkin",
-              "transport": "kafka",
-              "endpoints": [
-                "127.0.0.1:29092"
-              ]
-            }
-          }
-```
-
 If using Docker Machine, replace *127.0.0.1* by the IP of the active Docker Machine (usually *192.168.99.100*,
 ```echo $(docker-machine ip $(docker-machine active))``` to display the IP).
 
@@ -173,21 +146,6 @@ docker run -d --name jaeger \
   -p 14268:14268 \
   -p 9411:9411 \
   jaegertracing/all-in-one
-```
-
-Use following configuration for the model:
-```json
-          {
-            "name": "opentracing-config",
-            "type": "any",
-            "value": {
-              "implementation": "jaeger",
-              "transport": "http",
-              "endpoints": [
-                "http://127.0.0.1:14268/api/traces"
-              ]
-            }
-          }
 ```
 
 If using Docker Machine, replace *127.0.0.1* by the IP of the active Docker Machine (usually *192.168.99.100*,
