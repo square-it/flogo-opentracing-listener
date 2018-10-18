@@ -4,7 +4,7 @@ import (
 	"sync"
 
 	"github.com/TIBCOSoftware/flogo-contrib/action/flow/instance"
-	"github.com/TIBCOSoftware/flogo-lib/core/events"
+	"github.com/TIBCOSoftware/flogo-lib/core/event"
 	"github.com/TIBCOSoftware/flogo-lib/logger"
 	"github.com/opentracing/opentracing-go"
 )
