@@ -3,7 +3,7 @@ package opentracing
 import (
 	"sync"
 
-	"github.com/TIBCOSoftware/flogo-contrib/action/flow/instance"
+	flowevent "github.com/TIBCOSoftware/flogo-contrib/action/flow/event"
 	"github.com/TIBCOSoftware/flogo-lib/core/event"
 	"github.com/TIBCOSoftware/flogo-lib/logger"
 	"github.com/opentracing/opentracing-go"
@@ -23,32 +23,27 @@ func (otl *OpenTracingListener) Name() string {
 	return otl.name
 }
 
-func (otl *OpenTracingListener) EventTypes() []string {
-	return []string{instance.FLOW_EVENT_TYPE}
-}
-
-func (otl *OpenTracingListener) HandleEvent(evt *events.EventContext) error {
-	// Handle flow events and ignore remaining
-	if evt.GetType() == instance.FLOW_EVENT_TYPE {
-		switch t := evt.GetEvent().(type) {
-		case instance.FlowEvent:
-			otl.logger.Debugf("Name: %s, ID: %s, Status: %s ", t.Name(), t.ID(), t.Status())
-			switch t.Status() {
-			case instance.STARTED:
-				startFlowSpan(t)
-			case instance.COMPLETED:
-				finishFlowSpan(t)
-			}
-		case instance.TaskEvent:
-			otl.logger.Debugf("Name: %s, FID: %s, Status: %s ", t.Name(), t.FlowID(), t.Status())
-			switch t.Status() {
-			case instance.STARTED:
-				startTaskSpan(t)
-			case instance.COMPLETED:
-				finishTaskSpan(t)
-			}
+func (otl *OpenTracingListener) HandleEvent(evt *event.EventContext) error {
+	// Handle flowevent events and ignore remaining
+	switch t := evt.GetEvent().(type) {
+	case flowevent.FlowEvent:
+		otl.logger.Debugf("Name: %s, ID: %s, Status: %s ", t.FlowName(), t.FlowID(), t.FlowStatus())
+		switch t.FlowStatus() {
+		case flowevent.STARTED:
+			startFlowSpan(t)
+		case flowevent.COMPLETED:
+			finishFlowSpan(t)
+		}
+	case flowevent.TaskEvent:
+		otl.logger.Debugf("Name: %s, FID: %s, Status: %s ", t.TaskName(), t.FlowID(), t.TaskStatus())
+		switch t.TaskStatus() {
+		case flowevent.STARTED:
+			startTaskSpan(t)
+		case flowevent.COMPLETED:
+			finishTaskSpan(t)
 		}
 	}
+
 	return nil
 }
 
@@ -57,41 +52,41 @@ func init() {
 
 	spans = make(map[string]opentracing.Span)
 
-	events.RegisterEventListener(&OpenTracingListener{name: "OpenTracingListener", logger: logger.GetLogger("open-tracing-listener")})
+	event.RegisterEventListener(&OpenTracingListener{name: "OpenTracingListener", logger: logger.GetLogger("open-tracing-listener")}, []string{flowevent.FLOW_EVENT_TYPE, flowevent.TASK_EVENT_TYPE})
 }
 
-func startFlowSpan(flowEvent instance.FlowEvent) {
-	span := opentracing.StartSpan(flowEvent.Name(), opentracing.StartTime(flowEvent.Time()))
-	span.SetTag("type", "flogo:flow")
+func startFlowSpan(flowEvent flowevent.FlowEvent) {
+	span := opentracing.StartSpan(flowEvent.FlowName(), opentracing.StartTime(flowEvent.Time()))
+	span.SetTag("type", "flogo:flowevent")
 
 	lock.Lock()
 	defer lock.Unlock()
-	spans[flowEvent.ID()] = span
+	spans[flowEvent.FlowID()] = span
 }
 
-func finishFlowSpan(flowEvent instance.FlowEvent) {
+func finishFlowSpan(flowEvent flowevent.FlowEvent) {
 	lock.Lock()
 	defer lock.Unlock()
-	span := spans[flowEvent.ID()]
+	span := spans[flowEvent.FlowID()]
 
 	span.FinishWithOptions(opentracing.FinishOptions{FinishTime: flowEvent.Time()})
 }
 
-func startTaskSpan(taskEvent instance.TaskEvent) {
+func startTaskSpan(taskEvent flowevent.TaskEvent) {
 	lock.Lock()
 	defer lock.Unlock()
 	flowSpan := spans[taskEvent.FlowID()]
 
-	span := opentracing.StartSpan(taskEvent.Name(), opentracing.ChildOf(flowSpan.Context()), opentracing.StartTime(taskEvent.Time()))
+	span := opentracing.StartSpan(taskEvent.TaskName(), opentracing.ChildOf(flowSpan.Context()), opentracing.StartTime(taskEvent.Time()))
 	span.SetTag("type", "flogo:activity")
 
-	spans[taskEvent.FlowID()+taskEvent.Name()] = span
+	spans[taskEvent.FlowID()+taskEvent.TaskName()] = span
 }
 
-func finishTaskSpan(taskEvent instance.TaskEvent) {
+func finishTaskSpan(taskEvent flowevent.TaskEvent) {
 	lock.Lock()
 	defer lock.Unlock()
-	span := spans[taskEvent.FlowID()+taskEvent.Name()]
+	span := spans[taskEvent.FlowID()+taskEvent.TaskName()]
 
 	span.FinishWithOptions(opentracing.FinishOptions{FinishTime: taskEvent.Time()})
 }
