@@ -81,7 +81,7 @@ Replace *127.0.0.1* by the actual IP of the Zipkin collector.
 
 ### Collectors
 
-This model can send traces to the following collectors:
+This listener can send traces to the following collectors:
 * [Zipkin](https://zipkin.io/) over HTTP transport
 * Zipkin over [Kafka](https://kafka.apache.org/) transport
 * [Jaeger](https://www.jaegertracing.io/) over HTTP transport
