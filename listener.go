@@ -7,6 +7,8 @@ import (
 	"github.com/TIBCOSoftware/flogo-lib/core/event"
 	"github.com/TIBCOSoftware/flogo-lib/logger"
 	"github.com/opentracing/opentracing-go"
+
+	_ "github.com/apache/thrift/lib/go/thrift" // required to define the dependency as a constraint in Gopkg.toml
 )
 
 var (

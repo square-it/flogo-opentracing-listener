@@ -2,9 +2,5 @@
   go-tests = true
 
 [[constraint]]
-  name = "github.com/TIBCOSoftware/flogo-contrib"
-  branch = "flow-audit-events"
-
-[[override]]
   name = "github.com/apache/thrift"
   branch = "master"
