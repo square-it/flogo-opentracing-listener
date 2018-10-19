@@ -24,11 +24,11 @@ cat << EOF >> ./src/test-opentracing/Gopkg.toml
 
 [[constraint]]
   name = "github.com/TIBCOSoftware/flogo-contrib"
-  branch = "flow-audit-events"
+  branch = "master"
 
 [[constraint]]
   name = "github.com/TIBCOSoftware/flogo-lib"
-  branch = "event-handler-support"
+  branch = "master"
 
 [[override]]
   name = "github.com/apache/thrift"
