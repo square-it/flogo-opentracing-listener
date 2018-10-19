@@ -29,10 +29,6 @@ cat << EOF >> ./src/test-opentracing/Gopkg.toml
 [[constraint]]
   name = "github.com/TIBCOSoftware/flogo-lib"
   branch = "master"
-
-[[override]]
-  name = "github.com/apache/thrift"
-  branch = "master"
 EOF
 
 flogo ensure
