@@ -10,5 +10,10 @@
   branch = "master"
 
 [[constraint]]
+  name = "github.com/square-it/flogo-contrib-activities"
+  branch = "sleep"
+  source = "github.com/debovema/flogo-contrib-activities"
+
+[[constraint]]
   name = "github.com/apache/thrift"
   branch = "master"
