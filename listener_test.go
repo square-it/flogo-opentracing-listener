@@ -3,20 +3,19 @@ package opentracing
 import (
 	"encoding/json"
 	"fmt"
+	_ "github.com/TIBCOSoftware/flogo-contrib/action/flow"
+	_ "github.com/TIBCOSoftware/flogo-contrib/activity/log"
+	_ "github.com/TIBCOSoftware/flogo-contrib/trigger/rest"
 	"github.com/TIBCOSoftware/flogo-lib/app"
 	"github.com/TIBCOSoftware/flogo-lib/engine"
+	"github.com/TIBCOSoftware/flogo-lib/logger"
+	_ "github.com/apache/thrift/lib/go/thrift"
+	_ "github.com/square-it/flogo-contrib-activities/sleep"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"testing"
-
-	_ "github.com/TIBCOSoftware/flogo-contrib/action/flow"
-	_ "github.com/TIBCOSoftware/flogo-contrib/activity/log"
-	_ "github.com/TIBCOSoftware/flogo-contrib/trigger/rest"
-	"github.com/TIBCOSoftware/flogo-lib/logger"
-	_ "github.com/apache/thrift/lib/go/thrift"
-	_ "github.com/square-it/flogo-contrib-activities/sleep"
 )
 
 const flogoJSON string = `{
@@ -73,9 +72,9 @@ const flogoJSON string = `{
             "name": "Sleep",
             "description": "Sleep Activity",
             "activity": {
-              "ref": "github.com/debovema/flogo-contrib-activities/sleep",
+              "ref": "github.com/square-it/flogo-contrib-activities/sleep",
               "input": {
-                "duration": "5s"
+                "duration": "0s"
               }
             }
           },
@@ -121,15 +120,15 @@ const flogoJSON string = `{
 }`
 
 func Benchmark(b *testing.B) {
-	startFlogoEngine()
+	startFlogoEngine(flogoJSON)
 
 	benchmarks := []struct {
 		name     string
 		endpoint string
 	}{
 		{"simple", "http://localhost:9233/test"},
-		{"error", "http://localhost:9233/notfound"},
 	}
+
 	for _, bm := range benchmarks {
 		b.Run(bm.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
@@ -142,7 +141,7 @@ func Benchmark(b *testing.B) {
 	}
 }
 
-func startFlogoEngine() {
+func startFlogoEngine(flogoJSON string) {
 	var ready = make(chan bool)
 
 	config := &app.Config{}
@@ -162,6 +161,8 @@ func waitForEngineToStart(ready <-chan bool) {
 		switch s {
 		case true:
 			logger.Debug("Engine is ready")
+		case false:
+			logger.Error("Engine did not start")
 		}
 	}
 }
