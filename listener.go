@@ -44,6 +44,8 @@ func (otl *OpenTracingListener) HandleEvent(evt *event.EventContext) error {
 		case flowevent.COMPLETED:
 			finishTaskSpan(t)
 		}
+          default:
+                   otl.logger.Debugf("Event of type %T is not supported",t)
 	}
 
 	return nil
