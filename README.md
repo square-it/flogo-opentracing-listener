@@ -19,7 +19,7 @@ Some dependencies must be overridden in *Gopkg.toml* file.
 In the directory of a Flogo project (with a *flogo.json* file), run:
 
 ```bash
-cat << EOF >> ./src/test-opentracing/Gopkg.toml
+cat << EOF >> ./src/*/Gopkg.toml
 
 
 [[constraint]]
