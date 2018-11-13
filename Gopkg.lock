@@ -10,8 +10,7 @@
   version = "v1.19.0"
 
 [[projects]]
-  branch = "master"
-  digest = "1:a3dc6cab4b3cc5e3a75f41b99b25a441138887ca26e5cea98544f6c480df62bc"
+  digest = "1:63af90669214d42279a26f7297fc0852126543a59b10f650713a9209d813183d"
   name = "github.com/TIBCOSoftware/flogo-contrib"
   packages = [
     "action/flow",
@@ -32,11 +31,11 @@
     "trigger/rest/cors",
   ]
   pruneopts = "T"
-  revision = "6968ae317d9decb89152a4e61c5e15249244c658"
+  revision = "2b1364a2a6af89175483b690bf6f7839e673257f"
+  version = "v0.5.7"
 
 [[projects]]
-  branch = "master"
-  digest = "1:5b0a4b2ab6cfe7f6112f65d16b13837a64ce5f50f96d04b9d8c587fbb6c901b5"
+  digest = "1:17d04943a0ccecce3d4547d8acb6c95dc84796ec3b60ad49da240169b67d8bd4"
   name = "github.com/TIBCOSoftware/flogo-lib"
   packages = [
     "app",
@@ -77,15 +76,16 @@
     "util/managed",
   ]
   pruneopts = "T"
-  revision = "e41193f633ccf7e9997e4d4a141291ea70356404"
+  revision = "7f1e2d29362432df0d563e2984b2de2ce450a1a1"
+  version = "v0.5.7"
 
 [[projects]]
   branch = "master"
-  digest = "1:681883b9a134e76058ce271a00d4d28cab623eb4262e25998ac17c8d22a51da0"
+  digest = "1:2fcd447fb480db9f98ecc924be3526ab210ff4e08e03bef70ae3586dd00d9e54"
   name = "github.com/apache/thrift"
   packages = ["lib/go/thrift"]
   pruneopts = "T"
-  revision = "9ee29516c419b7eaa95ed89a93b135ea1c683576"
+  revision = "24918abba929282d6e405fedbc2ef68c3e894136"
 
 [[projects]]
   branch = "master"
@@ -160,6 +160,14 @@
   revision = "26a05976f9bf5c3aa992cc20e8588c359418ee58"
 
 [[projects]]
+  digest = "1:0a69a1c0db3591fcefb47f115b224592c8dfa4368b7ba9fae509d5e16cdc95c8"
+  name = "github.com/konsorten/go-windows-terminal-sequences"
+  packages = ["."]
+  pruneopts = "T"
+  revision = "5c8c8bd35d3832f5d134ae1e1e375b69a4d25242"
+  version = "v1.0.1"
+
+[[projects]]
   branch = "master"
   digest = "1:a64e323dc06b73892e5bb5d040ced475c4645d456038333883f58934abbf6f72"
   name = "github.com/kr/logfmt"
@@ -176,8 +184,7 @@
   revision = "a52f2342449246d5bcc273e65cbdcfa5f7d6c63c"
 
 [[projects]]
-  branch = "master"
-  digest = "1:434c5052422c04bb1ad53731c9a0eefed373759380a3fea73c4af0fbaee9662d"
+  digest = "1:841fcba20c9b41a7519f3910b083d16be2c3479cc282859333fe07145c5b9a9a"
   name = "github.com/opentracing/opentracing-go"
   packages = [
     ".",
@@ -185,7 +192,8 @@
     "log",
   ]
   pruneopts = "T"
-  revision = "be550b025b433cdfa2f11efb962afa2ea3c4d967"
+  revision = "1949ddbfd147afd4d964a9f00b24eb291e0e7c38"
+  version = "v1.0.2"
 
 [[projects]]
   digest = "1:3608dc9db41ba5027a5c7394f4ba021b77ef6481bb9cf2fdcaccc8b3de4bd249"
@@ -229,30 +237,31 @@
   revision = "3113b8401b8a98917cde58f8bbd42a1b1c03b1fd"
 
 [[projects]]
-  digest = "1:a89b729a9a07a05a171d5a68402feceba69245d00e6dc7912ca2dbc98036ea06"
+  digest = "1:a204f9aa04d3305be0d4d8f69f42aee6c649a8f9f9a8dbbbaff54bdad5ce50c7"
   name = "github.com/sirupsen/logrus"
   packages = ["."]
   pruneopts = "T"
-  revision = "418b41d23a1bf978c06faea5313ba194650ac088"
-  version = "v0.8.7"
+  revision = "bcd833dfe83d3cebad139e4a29ed79cb2318bf95"
+  version = "v1.2.0"
 
 [[projects]]
-  branch = "sleep"
-  digest = "1:e7fb52151502b09f8fbffdcfcab53e21298749e5589c639659973c5b3f34a929"
+  branch = "master"
+  digest = "1:5bcd1c76c25ca9d8467dcd1426c474f29b539a9fc80a001a1742d396bf61ec35"
   name = "github.com/square-it/flogo-contrib-activities"
   packages = ["sleep"]
   pruneopts = "T"
-  revision = "b9dee218a352ae053c336d08f97e758c238bcef6"
-  source = "github.com/debovema/flogo-contrib-activities"
+  revision = "4e9ac86c5fa92c9951d4163226fc938bc1677d9a"
 
 [[projects]]
-  digest = "1:d70f1565cfe77b81cd82773ff430e6f85de41658536ef70949a65643f7a5b374"
+  digest = "1:330d573e39e55db7e74464600a46fefddff5d7cfd7e53d395cf1c5754302218c"
   name = "github.com/uber/jaeger-client-go"
   packages = [
     ".",
     "internal/baggage",
     "internal/spanlog",
+    "internal/throttler",
     "log",
+    "thrift",
     "thrift-gen/agent",
     "thrift-gen/jaeger",
     "thrift-gen/sampling",
@@ -261,8 +270,8 @@
     "utils",
   ]
   pruneopts = "T"
-  revision = "f54d8ece0a66e3db6a9247e946eb1e2bd79029ea"
-  version = "v2.11.1"
+  revision = "1a782e2da844727691fef1757c72eb190c2909f0"
+  version = "v2.15.0"
 
 [[projects]]
   digest = "1:41dc72409889b32146e65e010bec6074a5302b34531b3128c2d453b5da022767"
@@ -271,6 +280,64 @@
   pruneopts = "T"
   revision = "ed3a127ec5fef7ae9ea95b01b542c47fbd999ce5"
   version = "v1.5.0"
+
+[[projects]]
+  digest = "1:365b8ecb35a5faf5aa0ee8d798548fc9cd4200cb95d77a5b0b285ac881bae499"
+  name = "go.uber.org/atomic"
+  packages = ["."]
+  pruneopts = "T"
+  revision = "1ea20fb1cbb1cc08cbd0d913a96dead89aa18289"
+  version = "v1.3.2"
+
+[[projects]]
+  digest = "1:8da5d356e645cc806b953f35966e9185e9f3817c6cee54f9b33ca602544ee434"
+  name = "go.uber.org/multierr"
+  packages = ["."]
+  pruneopts = "T"
+  revision = "3c4937480c32f4c13a875a1829af76c98ca3d40a"
+  version = "v1.1.0"
+
+[[projects]]
+  digest = "1:c57d4b95825e74f8eb3b0c851d04aac3626a602de613f8702c0de41de26856b6"
+  name = "go.uber.org/zap"
+  packages = [
+    ".",
+    "buffer",
+    "internal/bufferpool",
+    "internal/color",
+    "internal/exit",
+    "zapcore",
+  ]
+  pruneopts = "T"
+  revision = "ff33455a0e382e8a81d14dd7c922020b6b5e7982"
+  version = "v1.9.1"
+
+[[projects]]
+  branch = "master"
+  digest = "1:0550efca924537365fba757950ae7b6ec8c11f018b5c2d6a189ac9a2af0f1ba7"
+  name = "golang.org/x/crypto"
+  packages = ["ssh/terminal"]
+  pruneopts = "T"
+  revision = "3d3f9f413869b949e48070b5bc593aa22cc2b8f2"
+
+[[projects]]
+  branch = "master"
+  digest = "1:f66cd895439d91ce840f7f9ab98f1c9d96d4798e667b64dd29d3953870eeec1a"
+  name = "golang.org/x/net"
+  packages = ["context"]
+  pruneopts = "T"
+  revision = "03003ca0c849e57b6ea29a4bab8d3cb6e4d568fe"
+
+[[projects]]
+  branch = "master"
+  digest = "1:a810055cfbdd9025f18eac69cc78b9284f549cd2c2a3990765de09dc828b713f"
+  name = "golang.org/x/sys"
+  packages = [
+    "unix",
+    "windows",
+  ]
+  pruneopts = "T"
+  revision = "66b7b1311ac80bbafcd2daeef9a5e6e2cd1e2399"
 
 [solve-meta]
   analyzer-name = "dep"
@@ -282,7 +349,6 @@
     "github.com/TIBCOSoftware/flogo-contrib/trigger/rest",
     "github.com/TIBCOSoftware/flogo-lib/app",
     "github.com/TIBCOSoftware/flogo-lib/core/event",
-    "github.com/TIBCOSoftware/flogo-lib/core/trigger",
     "github.com/TIBCOSoftware/flogo-lib/engine",
     "github.com/TIBCOSoftware/flogo-lib/logger",
     "github.com/apache/thrift/lib/go/thrift",
