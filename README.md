@@ -6,33 +6,13 @@ For an introduction of concepts, read the [OpenTracing documentation](http://ope
 
 ## Installation
 
+> Minimum required version of Flogo: **0.5.7**
+
 ### Flogo Web
 
 This listener is not available yet with the Flogo Web UI.
 
 ### Flogo CLI
-
-#### Override dependencies
-
-Some dependencies must be overridden in *Gopkg.toml* file. 
-
-In the directory of a Flogo project (with a *flogo.json* file), run:
-
-```bash
-cat << EOF >> ./src/*/Gopkg.toml
-
-
-[[constraint]]
-  name = "github.com/TIBCOSoftware/flogo-contrib"
-  branch = "master"
-
-[[constraint]]
-  name = "github.com/TIBCOSoftware/flogo-lib"
-  branch = "master"
-EOF
-
-flogo ensure
-```
 
 #### Install the listener
 
@@ -41,7 +21,7 @@ The listener must be installed once for an application. Basically it's just a ma
 In the directory of a Flogo project (with a *flogo.json* file), run:
 
 ```bash
-flogo install github.com/debovema/flogo-opentracing-listener
+flogo install github.com/square-it/flogo-opentracing-listener
 ```
 
 #### Build and run
