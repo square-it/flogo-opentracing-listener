@@ -1,0 +1,7 @@
+container:
+  image: golang:latest
+test_task:
+  env:
+    CIRRUS_WORKING_DIR: /go/src/github.com/$CIRRUS_REPO_FULL_NAME
+  get_script: go get -t -v ./...
+  test_script: go test -v ./...
