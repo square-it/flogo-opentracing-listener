@@ -1,6 +1,0 @@
-[prune]
-  go-tests = true
-
-[[constraint]]
-  name = "github.com/apache/thrift"
-  branch = "master"

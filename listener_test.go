@@ -3,14 +3,13 @@ package opentracing
 import (
 	"encoding/json"
 	"fmt"
-	_ "github.com/TIBCOSoftware/flogo-contrib/action/flow"
-	_ "github.com/TIBCOSoftware/flogo-contrib/activity/log"
-	_ "github.com/TIBCOSoftware/flogo-contrib/trigger/rest"
-	"github.com/TIBCOSoftware/flogo-lib/app"
-	"github.com/TIBCOSoftware/flogo-lib/engine"
-	"github.com/TIBCOSoftware/flogo-lib/logger"
 	_ "github.com/apache/thrift/lib/go/thrift"
-	_ "github.com/square-it/flogo-contrib-activities/sleep"
+	_ "github.com/project-flogo/contrib/activity/log"
+	_ "github.com/project-flogo/contrib/trigger/rest"
+	"github.com/project-flogo/core/app"
+	"github.com/project-flogo/core/engine"
+	logger "github.com/project-flogo/core/support/log"
+	_ "github.com/project-flogo/flow"
 	"net/http"
 	"os"
 	"os/signal"
@@ -23,10 +22,15 @@ const flogoJSON string = `{
   "type": "flogo:app",
   "version": "0.0.1",
   "appModel": "1.0.0",
+  "imports": [
+    "github.com/project-flogo/contrib/activity/log",
+    "github.com/project-flogo/contrib/trigger/rest",
+    "github.com/project-flogo/flow"
+  ],
   "triggers": [
     {
       "id": "receive_http_message",
-      "ref": "github.com/TIBCOSoftware/flogo-contrib/trigger/rest",
+      "type": "rest",
       "name": "Receive HTTP Message",
       "description": "Simple REST Trigger",
       "settings": {
@@ -35,8 +39,8 @@ const flogoJSON string = `{
       "handlers": [
         {
           "action": {
-            "ref": "github.com/TIBCOSoftware/flogo-contrib/action/flow",
-            "data": {
+            "type": "flow",
+            "settings": {
               "flowURI": "res://flow:sample_flow"
             }
           },
@@ -59,7 +63,7 @@ const flogoJSON string = `{
             "name": "Log Message",
             "description": "Simple Log Activity",
             "activity": {
-              "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+              "type": "log",
               "input": {
                 "message": "first log",
                 "flowInfo": "false",
@@ -68,38 +72,15 @@ const flogoJSON string = `{
             }
           },
           {
-            "id": "sleep_1",
-            "name": "Sleep",
-            "description": "Sleep Activity",
-            "activity": {
-              "ref": "github.com/square-it/flogo-contrib-activities/sleep",
-              "input": {
-                "duration": "0s"
-              }
-            }
-          },
-          {
             "id": "log_2",
-            "type": "iterator",
             "name": "Log in a loop",
             "description": "Simple Log Activity",
-            "settings": {
-              "iterate": "2"
-            },
             "activity": {
-              "ref": "github.com/TIBCOSoftware/flogo-contrib/activity/log",
+              "type": "log",
               "input": {
+                "message": "last log",
                 "flowInfo": "false",
                 "addToFlow": "false"
-              },
-              "mappings": {
-                "input": [
-                  {
-                    "type": "assign",
-                    "value": "$current.iteration.value",
-                    "mapTo": "message"
-                  }
-                ]
               }
             }
           }
@@ -107,10 +88,6 @@ const flogoJSON string = `{
         "links": [
           {
             "from": "log_1",
-            "to": "sleep_1"
-          },
-          {
-            "from": "sleep_1",
             "to": "log_2"
           }
         ]
@@ -160,9 +137,9 @@ func waitForEngineToStart(ready <-chan bool) {
 	case s := <-ready:
 		switch s {
 		case true:
-			logger.Debug("Engine is ready")
+			logger.RootLogger().Debug("Engine is ready")
 		case false:
-			logger.Error("Engine did not start")
+			logger.RootLogger().Error("Engine did not start")
 		}
 	}
 }
@@ -174,13 +151,13 @@ func startupEngine(config *app.Config, ready chan<- bool) int {
 
 	e, err := engine.New(config)
 	if err != nil {
-		log.Errorf("Failed to create engine instance due to error: %s", err.Error())
+		logger.RootLogger().Errorf("Failed to create engine instance due to error: %s", err.Error())
 		return 1
 	}
 
 	err = e.Start()
 	if err != nil {
-		log.Errorf("Failed to start engine due to error: %s", err.Error())
+		logger.RootLogger().Errorf("Failed to start engine due to error: %s", err.Error())
 		return 1
 	}
 
@@ -209,7 +186,7 @@ func setupSignalHandling() chan int {
 		case syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT:
 			exitChan <- 0
 		default:
-			logger.Debug("Unknown signal.")
+			logger.RootLogger().Debug("Unknown signal.")
 			exitChan <- 1
 		}
 	}

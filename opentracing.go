@@ -3,11 +3,11 @@ package opentracing
 import (
 	"errors"
 	"fmt"
+	logger "github.com/project-flogo/core/support/log"
 	"io"
 	"os"
 	"strings"
 
-	"github.com/TIBCOSoftware/flogo-lib/logger"
 	"github.com/opentracing/opentracing-go"
 	zipkin "github.com/openzipkin-contrib/zipkin-go-opentracing"
 	"github.com/uber/jaeger-client-go"
@@ -15,7 +15,7 @@ import (
 )
 
 var (
-	log = logger.GetLogger("flowmodel-opentracing")
+	opentracinglogger = logger.ChildLogger(logger.RootLogger(), "opentracing")
 )
 
 const (
@@ -50,21 +50,21 @@ func initFromEnvVars() {
 		return
 	}
 
-	log.Infof("Implementation : %s", globalOpenTracingImplementation)
+	opentracinglogger.Infof("Implementation : %s", globalOpenTracingImplementation)
 
 	globalOpenTracingTransport, exists := os.LookupEnv(EnvVarTransport)
 	if !exists {
-		log.Errorf("Environment variable %s must be set to initialize OpenTracing tracer.", EnvVarTransport)
+		opentracinglogger.Errorf("Environment variable %s must be set to initialize OpenTracing tracer.", EnvVarTransport)
 		return
 	}
-	log.Infof("Transport      : %s", globalOpenTracingTransport)
+	opentracinglogger.Infof("Transport      : %s", globalOpenTracingTransport)
 
 	globalOpenTracingEndpoints, exists := os.LookupEnv(EnvVarEndpoints)
 	if !exists {
-		log.Errorf("Environment variable %s must be set to initialize OpenTracing tracer.", EnvVarEndpoints)
+		opentracinglogger.Errorf("Environment variable %s must be set to initialize OpenTracing tracer.", EnvVarEndpoints)
 		return
 	}
-	log.Infof("Endpoints      : %s", globalOpenTracingEndpoints)
+	opentracinglogger.Infof("Endpoints      : %s", globalOpenTracingEndpoints)
 
 	openTracingConfig := &Config{Implementation: globalOpenTracingImplementation, Transport: globalOpenTracingTransport, Endpoints: strings.Split(globalOpenTracingEndpoints, ",")}
 

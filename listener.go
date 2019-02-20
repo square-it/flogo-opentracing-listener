@@ -1,14 +1,13 @@
 package opentracing
 
 import (
+	"github.com/project-flogo/core/support/event"
 	"sync"
 
-	flowevent "github.com/TIBCOSoftware/flogo-contrib/action/flow/event"
-	"github.com/TIBCOSoftware/flogo-lib/core/event"
-	"github.com/TIBCOSoftware/flogo-lib/logger"
-	"github.com/opentracing/opentracing-go"
+	logger "github.com/project-flogo/core/support/log"
+	flowevent "github.com/project-flogo/flow/support/event"
 
-	_ "github.com/apache/thrift/lib/go/thrift" // required to define the dependency as a constraint in Gopkg.toml
+	"github.com/opentracing/opentracing-go"
 )
 
 var (
@@ -44,8 +43,8 @@ func (otl *OpenTracingListener) HandleEvent(evt *event.EventContext) error {
 		case flowevent.COMPLETED:
 			finishTaskSpan(t)
 		}
-          default:
-                   otl.logger.Debugf("Event of type %T is not supported",t)
+	default:
+		otl.logger.Debugf("Event of type %T is not supported", t)
 	}
 
 	return nil
@@ -56,7 +55,7 @@ func init() {
 
 	spans = make(map[string]opentracing.Span)
 
-	event.RegisterEventListener(&OpenTracingListener{name: "OpenTracingListener", logger: logger.GetLogger("open-tracing-listener")}, []string{flowevent.FLOW_EVENT_TYPE, flowevent.TASK_EVENT_TYPE})
+	event.RegisterEventListener(&OpenTracingListener{name: "OpenTracingListener", logger: logger.ChildLogger(logger.RootLogger(), "open-tracing-listener")}, []string{flowevent.FLOW_EVENT_TYPE, flowevent.TASK_EVENT_TYPE})
 }
 
 func startFlowSpan(flowEvent flowevent.FlowEvent) {
