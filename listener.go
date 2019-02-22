@@ -1,7 +1,7 @@
 package opentracing
 
 import (
-	"github.com/project-flogo/core/support/event"
+	"github.com/project-flogo/core/engine/event"
 	"sync"
 
 	logger "github.com/project-flogo/core/support/log"
@@ -24,7 +24,7 @@ func (otl *OpenTracingListener) Name() string {
 	return otl.name
 }
 
-func (otl *OpenTracingListener) HandleEvent(evt *event.EventContext) error {
+func (otl *OpenTracingListener) HandleEvent(evt *event.Context) error {
 	// Handle flowevent events and ignore remaining
 	switch t := evt.GetEvent().(type) {
 	case flowevent.FlowEvent:
@@ -55,7 +55,9 @@ func init() {
 
 	spans = make(map[string]opentracing.Span)
 
-	event.RegisterEventListener(&OpenTracingListener{name: "OpenTracingListener", logger: logger.ChildLogger(logger.RootLogger(), "open-tracing-listener")}, []string{flowevent.FLOW_EVENT_TYPE, flowevent.TASK_EVENT_TYPE})
+	listener := &OpenTracingListener{name: "OpenTracingListener", logger: logger.ChildLogger(logger.RootLogger(), "open-tracing-listener")}
+
+	event.RegisterListener(listener.Name(), listener, []string{flowevent.FLOW_EVENT_TYPE, flowevent.TASK_EVENT_TYPE})
 }
 
 func startFlowSpan(flowEvent flowevent.FlowEvent) {

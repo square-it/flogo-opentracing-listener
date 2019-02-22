@@ -40,6 +40,9 @@ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZb
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/project-flogo/contrib v0.9.0-alpha.3.0.20190211153431-680ebf186e58 h1:L3qUPNpuHxLUJh+mtQGSanFwfFMT9WccaKemhDTpiQk=
 github.com/project-flogo/contrib v0.9.0-alpha.3.0.20190211153431-680ebf186e58/go.mod h1:tdinBFJomgOs2xQJCc3igHomrCeu2JaHu1EbuYb56Ww=
+github.com/project-flogo/core v0.9.0-alpha.4/go.mod h1:BHeB55AxPhvlNGd+it50rE977ag6xE3bD2RluSDeKBA=
+github.com/project-flogo/core v0.9.0-alpha.4.0.20190213174534-066cf88d3782/go.mod h1:Dof6t60n/nvN7aPpoUz97JL+VIKdsYMbhqwN++WCdz8=
+github.com/project-flogo/core v0.9.0-alpha.4.0.20190222014457-58aabb3cc535/go.mod h1:Dof6t60n/nvN7aPpoUz97JL+VIKdsYMbhqwN++WCdz8=
 github.com/rcrowley/go-metrics v0.0.0-20181016184325-3113b8401b8a h1:9ZKAASQSHhDYGoxY8uLVpewe1GDZ2vu2Tr/vTdVAkFQ=
 github.com/rcrowley/go-metrics v0.0.0-20181016184325-3113b8401b8a/go.mod h1:bCqnVzQkZxMG4s8nGwiZ5l3QUCyqpo9Y+/ZMZ9VjZe4=
 github.com/skothari-tibco/core v0.0.0-20190215153801-2f9dd9f3fbb7 h1:lMA+8iERNnMSi3Hi8jxSXWw3xoVNmXvLYgEQH9hKkzI=
