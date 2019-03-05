@@ -21,15 +21,6 @@ This listener is not available yet with the Flogo Web UI.
 The listener must be installed once for an application. Basically it's just a matter of adding the right package import
 in the *imports.go* file. This is performed seamlessly with the [Flogo CLI](https://github.com/project-flogo/cli).
 
-> Until [project-flogo/cli#32](https://github.com/project-flogo/cli/pull/32) is merged, install this [Flogo CLI fork](https://github.com/square-it/cli): <br />
-```
-git clone https://github.com/square-it/cli.git /tmp/cli
-cd /tmp/cli
-git checkout install-contribs-with-version
-echo "replace github.com/project-flogo/core => github.com/square-it/core generate-json-schema" >> go.mod
-go install ./...
-```
-
 In the directory of a Flogo project (with a *flogo.json* file), run:
 
 ```bash
